@@ -98,16 +98,16 @@ struct cache_t {
   void replace_(bool is_ghost_often) {
     auto rsz = recent_.size();
     if (rsz != 0 && (rsz > p || (is_ghost_often && rsz == p))) {
-      ghost_slide_(recent_, ghost_recent_);
+      ghost_slide_(recent_, ghost_recent_, entry_status::GHOST_RECENT);
     } else {
-      ghost_slide_(often_, ghost_often_);
+      ghost_slide_(often_, ghost_often_, entry_status::GHOST_OFTEN);
     }
   }
-  void ghost_slide_(list<pair<KeyT, T>>& loaded, list<KeyT>& ghost) {
+  void ghost_slide_(list<pair<KeyT, T>>& loaded, list<KeyT>& ghost, entry_status new_status) {
     auto lru = loaded.back().first;
     loaded.pop_back();
     ghost.push_front(lru);
-    map_.find(lru)->second.second = variant<ListIt, GhostIt>{ghost.begin()};
+    map_.find(lru)->second = pair(new_status, variant<ListIt, GhostIt>{ghost.begin()});
   }
 
   void enlarge_p_() {
@@ -132,7 +132,7 @@ struct cache_t {
       } else {
         remove_lru_(recent_);
       }
-    } else {
+    } else if(full_recent_sz < sz_) {
       if (size() > sz_) {
         if (size() == 2 * sz_) {
           remove_lru_(ghost_often_);

@@ -10,7 +10,7 @@
 of my C++ study. */
 
 /* Implementation of ARC policy from
- * https://www.usenix.org/legacy/events/fast03/tech/full_papers/megiddo/megiddo.pdf*/
+ * https://www.usenix.org/legacy/events/fast03/tech/full_papers/megiddo/megiddo.pdf */
 namespace caches {
 using std::list, std::unordered_map, std::size_t, std::pair, std::variant;
 
